@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last Move - Rock Paper Scissors</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Orbitron:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .blood-drip {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url('http://static.photos/red/1200x630/666');
+            background-size: cover;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .glitch {
+            position: relative;
+        }
+        
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff0000;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #00ff00;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            10% { clip: rect(112px, 9999px, 76px, 0); }
+            20% { clip: rect(85px, 9999px, 77px, 0); }
+            30% { clip: rect(27px, 9999px, 97px, 0); }
+            40% { clip: rect(64px, 9999px, 98px, 0); }
+            50% { clip: rect(61px, 9999px, 85px, 0); }
+            60% { clip: rect(99px, 9999px, 114px, 0); }
+            70% { clip: rect(34px, 9999px, 115px, 0); }
+            80% { clip: rect(98px, 9999px, 129px, 0); }
+            90% { clip: rect(43px, 9999px, 96px, 0); }
+            100% { clip: rect(82px, 9999px, 64px, 0); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 119px, 0); }
+            10% { clip: rect(120px, 9999px, 152px, 0); }
+            20% { clip: rect(85px, 9999px, 16px, 0); }
+            30% { clip: rect(52px, 9999px, 57px, 0); }
+            40% { clip: rect(125px, 9999px, 122px, 0); }
+            50% { clip: rect(42px, 9999px, 67px, 0); }
+            60% { clip: rect(104px, 9999px, 115px, 0); }
+            70% { clip: rect(26px, 9999px, 38px, 0); }
+            80% { clip: rect(15px, 9999px, 54px, 0); }
+            90% { clip: rect(60px, 9999px, 103px, 0); }
+            100% { clip: rect(112px, 9999px, 80px, 0); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .hand-cursor {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>✋</text></svg>"), auto;
+        }
+        
+        .scratches {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url('http://static.photos/black/1200x630/13');
+            background-size: cover;
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="relative">
+    <div class="blood-drip"></div>
+    <div class="scratches"></div>
+    
+    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+        <div class="text-center mb-12" data-aos="fade-down">
+            <h1 class="glitch text-6xl md:text-8xl font-bold mb-4 text-red-600" data-text="LAST MOVE">
+                LAST MOVE
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 tracking-wider">
+                A deadly game of Rock, Paper, Scissors
+            </p>
+        </div>
+        
+        <div class="w-full max-w-4xl bg-black bg-opacity-70 border-2 border-red-900 rounded-lg shadow-lg p-6 md:p-8 mb-12" data-aos="zoom-in">
+            <div class="flex justify-between items-center mb-8">
+                <div class="text-center">
+                    <div class="text-2xl text-red-500 mb-2">YOU</div>
+                    <div id="player-score" class="text-4xl font-bold">0</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl text-red-500 mb-2">ROUND</div>
+                    <div id="round-count" class="text-4xl font-bold">1</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl text-red-500 mb-2">CPU</div>
+                    <div id="cpu-score" class="text-4xl font-bold">0</div>
+                </div>
+            </div>
+            
+            <div class="flex justify-center space-x-4 md:space-x-8 mb-8">
+                <button id="rock-btn" class="hand-cursor bg-gray-900 hover:bg-red-900 text-white font-bold py-4 px-6 rounded-full border-2 border-red-700 transition-all duration-300 transform hover:scale-110">
+                    <i data-feather="octagon" class="w-12 h-12"></i>
+                    <span class="block mt-2">ROCK</span>
+                </button>
+                <button id="paper-btn" class="hand-cursor bg-gray-900 hover:bg-red-900 text-white font-bold py-4 px-6 rounded-full border-2 border-red-700 transition-all duration-300 transform hover:scale-110">
+                    <i data-feather="file-text" class="w-12 h-12"></i>
+                    <span class="block mt-2">PAPER</span>
+                </button>
+                <button id="scissors-btn" class="hand-cursor bg-gray-900 hover:bg-red-900 text-white font-bold py-4 px-6 rounded-full border-2 border-red-700 transition-all duration-300 transform hover:scale-110">
+                    <i data-feather="scissors" class="w-12 h-12"></i>
+                    <span class="block mt-2">SCISSORS</span>
+                </button>
+            </div>
+            
+            <div id="result-display" class="text-center min-h-24">
+                <p class="text-2xl text-gray-300">Make your move...</p>
+            </div>
+            
+            <div class="flex justify-center mt-6">
+                <button id="reset-btn" class="bg-red-900 hover:bg-red-800 text-white font-bold py-3 px-6 rounded-lg border border-red-700 transition-all duration-300">
+                    RESET GAME
+                </button>
+            </div>
+        </div>
+        
+        <div class="text-center text-gray-500 text-sm">
+            <p>Only one will survive the LAST MOVE...</p>
+        </div>
+    </div>
+    
+    <script>
+        AOS.init();
+        feather.replace();
+        
+        let playerScore = 0;
+        let cpuScore = 0;
+        
+        const rockBtn = document.getElementById('rock-btn');
+        const paperBtn = document.getElementById('paper-btn');
+        const scissorsBtn = document.getElementById('scissors-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const playerScoreEl = document.getElementById('player-score');
+        const cpuScoreEl = document.getElementById('cpu-score');
+        const roundCountEl = document.getElementById('round-count');
+        const resultDisplay = document.getElementById('result-display');
+        
+        async function playRound(playerChoice) {
+            rockBtn.disabled = true;
+            paperBtn.disabled = true;
+            scissorsBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/play', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ move: playerChoice })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Server responded with an error!');
+                }
+                
+                const data = await response.json();
+                
+                if (data.gameOver) {
+                    let finalResult = "";
+                    if (playerScore > cpuScore) {
+                        finalResult = "YOU WON THE GAME!";
+                    } else if (cpuScore > playerScore) {
+                        finalResult = "YOU LOST THE GAME!";
+                    } else {
+                        finalResult = "THE GAME IS A TIE!";
+                    }
+                    
+                    resultDisplay.innerHTML = `<p class="text-3xl font-bold text-red-500">GAME OVER!</p><p class="text-xl mt-2">${finalResult}</p>`;
+                    
+                    return;
+                }
+                
+                if (data.result === 'You WIN this round!') {
+                    playerScore++;
+                } else if (data.result === 'You LOSE this round!') {
+                    cpuScore++;
+                }
+                
+                playerScoreEl.textContent = playerScore;
+                cpuScoreEl.textContent = cpuScore;
+                
+                resultDisplay.innerHTML = `
+                    <div class="pulse">
+                        <p class="text-xl text-red-500 mb-2">You chose <span class="font-bold">${data.playerChoice.toUpperCase()}</span></p>
+                        <p class="text-xl text-red-500 mb-2">CPU chose <span class="font-bold">${data.cpuChoice.toUpperCase()}</span></p>
+                        <p class="text-3xl font-bold text-white mt-4">${data.result}</p>
+                    </div>
+                `;
+                
+                roundCountEl.textContent = data.roundCount;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                resultDisplay.innerHTML = '<p class="text-2xl text-red-500">Error connecting to server...</p>';
+            } finally {
+                setTimeout(() => {
+                    // Only re-enable buttons if the game isn't over
+                    if (parseInt(roundCountEl.textContent) < 10) {
+                        rockBtn.disabled = false;
+                        paperBtn.disabled = false;
+                        scissorsBtn.disabled = false;
+                    }
+                }, 1000);
+            }
+        }
+        
+        rockBtn.addEventListener('click', () => playRound('rock'));
+        paperBtn.addEventListener('click', () => playRound('paper'));
+        scissorsBtn.addEventListener('click', () => playRound('scissors'));
+        
+        resetBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/reset', { method: 'POST' });
+                if (!response.ok) {
+                    throw new Error('Failed to reset game!');
+                }
+
+                playerScore = 0;
+                cpuScore = 0;
+                playerScoreEl.textContent = playerScore;
+                cpuScoreEl.textContent = cpuScore;
+                roundCountEl.textContent = 1;
+                resultDisplay.innerHTML = '<p class="text-2xl text-gray-300">Game reset. Make your move...</p>';
+                
+                rockBtn.disabled = false;
+                paperBtn.disabled = false;
+                scissorsBtn.disabled = false;
+                
+            } catch (error) {
+                console.error('Error resetting:', error);
+                resultDisplay.innerHTML = '<p class="text-2xl text-red-500">Error resetting game...</p>';
+            }
+        });
+    </script>
+</body>
+</html>
